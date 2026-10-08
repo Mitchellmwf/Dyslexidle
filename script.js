@@ -113,6 +113,14 @@ const prevGuessesDiv = document.getElementById("prevGuesses");
 function moveToNextWord() {
     //capitalize the input word
     inputWord = inputWord.toUpperCase();
+
+    // Notify the virtual keyboard to reveal only letters from this submitted guess.
+    document.dispatchEvent(
+        new CustomEvent("guessSubmitted", {
+            detail: { guess: inputWord },
+        })
+    );
+
     // Make div visible
     prevGuessesDiv.style.display = "block";
 

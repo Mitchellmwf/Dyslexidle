@@ -76,7 +76,6 @@ const VirtualKeyboard = {
 	bindPressedState() {
 		document.addEventListener("keydown", (event) => {
 			const key = event.key.toLowerCase();
-			this.revealMapping(key);
 			const keyButton = document.getElementById(key);
 			if (keyButton) {
 				keyButton.classList.add("keydown");
@@ -90,32 +89,67 @@ const VirtualKeyboard = {
 				keyButton.classList.remove("keydown");
 			}
 		});
+
+		document.addEventListener("guessSubmitted", (event) => {
+			const guess = event?.detail?.guess;
+			this.revealSubmittedGuess(guess);
+		});
 	},
 
-	revealMapping(physicalKey) {
+	revealSubmittedGuess(guess) {
+		if (typeof guess !== "string" || guess.length === 0) {
+			return;
+		}
+
+		const guessLetters = [...new Set(guess.toLowerCase().split(""))].filter((letter) => /^[a-z]$/.test(letter));
+		const map = typeof keyboardScrambleMap === "function" ? keyboardScrambleMap() : null;
+
+		if (!map) {
+			return;
+		}
+
+		guessLetters.forEach((scrambledLetter) => {
+			const physicalKey = this.getPhysicalKeyForScrambledLetter(scrambledLetter, map);
+			if (physicalKey) {
+				this.revealMapping(physicalKey, scrambledLetter);
+			}
+		});
+	},
+
+	getPhysicalKeyForScrambledLetter(scrambledLetter, map) {
+		for (const [physicalKey, mappedKey] of Object.entries(map)) {
+			if (!/^[a-z]$/.test(physicalKey)) {
+				continue;
+			}
+
+			if (mappedKey.toLowerCase() === scrambledLetter) {
+				return physicalKey;
+			}
+		}
+
+		return null;
+	},
+
+	revealMapping(physicalKey, mappedKey) {
 		if (!/^[a-z]$/.test(physicalKey)) {
 			return;
 		}
 
-		if (typeof keyboardScrambleMap !== "function") {
+		const normalizedMappedKey = mappedKey.toLowerCase();
+		if (!/^[a-z]$/.test(normalizedMappedKey)) {
 			return;
 		}
 
-		const mappedKey = keyboardScrambleMap(physicalKey).toLowerCase();
-		if (!/^[a-z]$/.test(mappedKey)) {
+		if (this.discoveredMap[physicalKey] === normalizedMappedKey) {
 			return;
 		}
 
-		if (this.discoveredMap[physicalKey] === mappedKey) {
-			return;
-		}
-
-		this.discoveredMap[physicalKey] = mappedKey;
+		this.discoveredMap[physicalKey] = normalizedMappedKey;
 		const label = this.labelByKey[physicalKey];
 		const keyButton = document.getElementById(physicalKey);
 
 		if (label) {
-			label.textContent = mappedKey;
+			label.textContent = normalizedMappedKey;
 		}
 
 		if (keyButton) {
