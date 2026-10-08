@@ -95,7 +95,7 @@ document.addEventListener("keydown", (event) => {
         }
         // Fill the remaining boxes with empty letter boxes
         if (inputWord.length < 4) {
-            const emptyBoxes = Array(4 - inputWord.length).fill('<span class="letter-box"></span>').join('');
+            const emptyBoxes = Array(4 - inputWord.length).fill('<span class="letter-box"style="color: #333333;">.</span>').join('');
             inputDiv.innerHTML += emptyBoxes;
         }  
         // Cap the total number of boxes and characters at 4
