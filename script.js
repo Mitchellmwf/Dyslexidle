@@ -54,7 +54,7 @@ let inputWord = "";
 
 const inputBoxes = '<span class="letter-box"></span>'.repeat(4);
 inputDiv.innerHTML = inputBoxes;
-let play = true;
+let play = false;
 
 fetch("four-letter-words.json")
     .then(response => response.json())

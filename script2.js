@@ -1,3 +1,4 @@
+//https://www.geeksforgeeks.org/html/build-a-virtual-keyboard-using-html-css-javascript/ modified by copilot
 const VirtualKeyboard = {
 	discoveredMap: {},
 	labelByKey: {},
@@ -162,10 +163,22 @@ const VirtualKeyboard = {
 	},
 };
 
-//pop up to ask if the user wants to enable the scrambled keyboard
-window.addEventListener("DOMContentLoaded", () => {
-    const enableScramble = confirm("Do you want to enable the scrambled keyboard?");
-    if (enableScramble) {
-        VirtualKeyboard.init();
-    }
+const yesBtn = document.getElementById("enableHintKeyboard");
+const noBtn = document.getElementById("disableHintKeyboard");
+const gameWindow = document.getElementById("gameWindow");
+const popupWindow = document.getElementById("popupWindow");
+
+yesBtn.addEventListener("click", () => {
+    VirtualKeyboard.init();
+    popupWindow.style.display = "none";
+    gameWindow.style.display = "inline-block";
+	play = true;
 });
+
+noBtn.addEventListener("click", () => {
+    popupWindow.style.display = "none";
+	play = true;
+    gameWindow.style.display = "inline-block";
+	play = true;
+});
+
