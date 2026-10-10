@@ -180,14 +180,16 @@ body{
 }
 
 .popdownAnimation {
-    animation: popdownAnimation 1500ms ease;
+    animation: popdownAnimation 2000ms ease;
 }
 
 @keyframes popdownAnimation {
-    0% { transform: translateY(-100%) translateX(-50%); opacity: 0; }
+    0% { transform: translateY(-75%) translateX(-50%); opacity: 0; }
+    30% {opacity: .1; }
     35% { transform: translateY(0) translateX(-50%); opacity: 1; }
     68% { transform: translateY(0) translateX(-50%); opacity: 1; }
-    100% { transform: translateY(-100%) translateX(-50%); opacity: 0; }
+    75% { opacity: .1; }
+    100% { transform: translateY(-75%) translateX(-50%); opacity: 0; }
 }
 
 .popupButton {
@@ -228,13 +230,17 @@ body{
         width: 98vw;
     }
     .key{
-        width: fit-content;
-        height: fit-content;
+        width: 9vw;
+        height: 9vw;
         min-height: 2em;
-        min-width: 1.05em;
+        min-width: 1.1em;
         padding: 0.1em;
-        line-height: 7.5vw;
+        line-height: 9vw;
         font-size: 2em;
+    }
+
+    .fn{
+        width: 15vw;
     }
 
     #gameWindow { 
@@ -285,7 +291,7 @@ body{
     }
 
     .popdownAnimation {
-        animation: popdownAnimation 1500ms ease;
+        animation: popdownAnimation 2000ms ease;
     }
 
     @keyframes popdownAnimation {

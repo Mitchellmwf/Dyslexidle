@@ -171,7 +171,7 @@ function animateInputBoxes(index, direction) {
         setTimeout(() => {
             popdownWindow.classList.remove("popdownAnimation");
             popdownWindow.style.display = "none";
-        }, 1450);
+        }, 1550);
         return;
     }
 
