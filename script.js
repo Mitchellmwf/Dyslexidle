@@ -57,8 +57,8 @@ function keyboardScrambleMap(key = "") {
 const inputDiv = document.getElementById("inputDiv");
 let inputWord = "";
 
-const inputBoxes = '<span class="letter-box"></span>'.repeat(4);
-const invalidReason = document.getElementById("invalidReason");
+const inputBoxes = '<span class="letterBox"></span>'.repeat(4);
+
 
 inputDiv.innerHTML = inputBoxes;
 let play = false;
@@ -95,13 +95,21 @@ document.addEventListener("keydown", (event) => {
         // Character input handling
         if (key.length === 1 && /[a-z]/.test(key)) {
             inputWord = inputWord.substring(0, inputBoxes.length - 1) + key;
-            const updatedBoxes = inputWord.split('').map(letter => `<span class="letter-box">${letter}</span>`).join('');
+            const updatedBoxes = inputWord.split('').map(letter => `<span class="letterBox">${letter}</span>`).join('');
             inputDiv.innerHTML = updatedBoxes;
         }
         // Backspace handling
         else if (key === "backspace") { 
-            inputWord = inputWord.substring(0, inputWord.length - 1);
-            const updatedBoxes = inputWord.split('').map(letter => `<span class="letter-box">${letter}</span>`).join('');
+            // if control key is pressed, delete all letters
+            if (event.ctrlKey) {
+                inputWord = "";
+                animateInputBoxes(0, "deleteAll");
+            }
+            else {
+                inputWord = inputWord.substring(0, inputWord.length - 1);
+                animateInputBoxes(0, "delete");
+            }
+            const updatedBoxes = inputWord.split('').map(letter => `<span class="letterBox">${letter}</span>`).join('');
             inputDiv.innerHTML = updatedBoxes;
         } 
         // Enter key handling
@@ -110,22 +118,29 @@ document.addEventListener("keydown", (event) => {
                 if (fourLetterWords.includes(inputWord.toUpperCase())) {
                     moveToNextWord();
                 } else {
+                    //Invalid input: word not in the list
                     invalidReason.textContent = "Not in Word List!";
+                    animateInputBoxes(-1, "popdown");
                     invalidWordWindow.style.display = "block";
-                    play = false;
+                    animateInputBoxes(0, "bad");
+                    //play = false;
                     return;
                 }
             }
             else {
+                //Invalid input: word is not four letters
                 invalidReason.textContent = "Please enter a four-letter word!";
+                animateInputBoxes(-1, "popdown");
                 invalidWordWindow.style.display = "block";
-                play = false;
+                animateInputBoxes(0, "bad");
+                //play = false;
                 return;
             }
+        animateInputBoxes(1, "flip");
         }
         // Fill the remaining boxes with empty letter boxes
         if (inputWord.length < 4) {
-            const emptyBoxes = Array(4 - inputWord.length).fill('<span class="letter-box"style="color: #333333;">.</span>').join('');
+            const emptyBoxes = Array(4 - inputWord.length).fill('<span class="letterBox"style="color: #333333;">.</span>').join('');
             inputDiv.innerHTML += emptyBoxes;
         }  
         // Cap the total number of boxes and characters at 4
@@ -136,6 +151,38 @@ document.addEventListener("keydown", (event) => {
         break;
     }
 });
+
+function animateInputBoxes(index, direction) {
+    let letterBoxes = document.querySelectorAll(".letterBox");
+    let letterBoxRows = Array.from(document.querySelectorAll(".letterBoxRow")).reverse();
+    const popdownWindow = document.querySelector("#invalidWordWindow");
+
+    if (direction === "bad") {
+        letterBoxRows[index].classList.add("wiggleBAD");
+    } else if (direction === "delete") {
+        letterBoxRows[index].classList.add("wiggleDelete");
+    } else if (direction === "flip") {
+        letterBoxRows[index].classList.add("flipSuccess");
+    } else if (direction === "deleteAll") {
+        letterBoxRows[index].classList.add("wiggleDeleteAll");
+    } else if (direction === "popdown") {
+        popdownWindow.style.display = "block";
+        popdownWindow.classList.add("popdownAnimation");
+        setTimeout(() => {
+            popdownWindow.classList.remove("popdownAnimation");
+            popdownWindow.style.display = "none";
+        }, 1450);
+        return;
+    }
+
+
+    setTimeout(() => {
+        letterBoxRows[index].classList.remove("wiggleDelete");
+        letterBoxRows[index].classList.remove("wiggleBAD");
+        letterBoxRows[index].classList.remove("flipSuccess");
+        letterBoxRows[index].classList.remove("wiggleDeleteAll");
+    }, 500);
+}
 
 // The below section moves the current input word to the previous guesses and adds colours based on how closely it matches the target word
 const prevGuessesDiv = document.getElementById("prevGuesses");
@@ -157,10 +204,10 @@ function moveToNextWord() {
     prevGuessesDiv.style.display = "block";
 
     // Append the current input word to the previous guesses section
-    prevGuessesDiv.innerHTML += `<div class="prev-guess">${inputDiv.innerHTML}</div>`;
+    prevGuessesDiv.innerHTML += `<div class="prevGuess letterBoxRow">${inputDiv.innerHTML}</div>`;
 
     //make each letter that matches the target word green
-    const prevGuessBoxes = prevGuessesDiv.lastElementChild.querySelectorAll(".letter-box");
+    const prevGuessBoxes = prevGuessesDiv.lastElementChild.querySelectorAll(".letterBox");
 
     let wordCopy = word.split('');
 
@@ -193,11 +240,13 @@ function moveToNextWord() {
     else {
         // Reset the input word and inputDiv for the next attempt
         inputWord = "";
-        inputDiv.innerHTML = '<span class="letter-box"></span>'.repeat(4);
+        inputDiv.innerHTML = '<span class="letterBox"></span>'.repeat(4);
         //scroll to the inputDiv
         inputDiv.scrollIntoView({ behavior: "smooth" });
     }
 }
+
+
 
 // Event listener for the "Play Again" button in the win window
 document.getElementById("playAgainWin").addEventListener("click", () => {
@@ -211,16 +260,12 @@ function resetGame() {
     inputWord = "";
     fetchRandomWord();
     play = true;
-    inputDiv.innerHTML = '<span class="letter-box"></span>'.repeat(4);
+    inputDiv.innerHTML = '<span class="letterBox"></span>'.repeat(4);
     prevGuessesDiv.innerHTML = "";
     prevGuessesDiv.style.display = "none";
 }
 
-// Event listener for the "Close" button in the invalid word window
-document.getElementById("closeInvalidWord").addEventListener("click", () => {
-    invalidWordWindow.style.display = "none";
-    play = true;
-});
+
 
 
 

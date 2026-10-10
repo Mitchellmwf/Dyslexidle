@@ -17,6 +17,15 @@ const VirtualKeyboard = {
 		const container = document.createElement("div");
 		container.id = "scrambledKeyboard";
 
+
+		// On mobile or portrait devices, move popdown into #keyboard div
+		if (window.innerHeight > window.innerWidth && window.innerWidth <= 1024) {
+			//clone the invalidWordWindow and append it to the keyboard div and delete the original
+			container.appendChild(invalidWordWindow.cloneNode(true));
+			invalidWordWindow.remove();
+		}
+
+
 		const keyboard = document.createElement("div");
 		keyboard.id = "keyboard";
 		container.appendChild(keyboard);
@@ -81,6 +90,8 @@ const VirtualKeyboard = {
 
 		document.body.appendChild(container);
 		this.bindPressedState();
+		
+
 	},
 
 	bindPressedState() {
@@ -188,7 +199,7 @@ const noBtn = document.getElementById("disableHintKeyboard");
 const normalKeyboardBtn = document.getElementById("enableNormalKeyboard");
 
 const gameWindow = document.getElementById("gameWindow");
-const settingWindow = document.getElementById("settingWindow");
+const settingsWindow = document.getElementById("settingsWindow");
 const inputPrompt = document.getElementById("inputPrompt");
 
 // Event listeners for enabling or disabling the hint keyboard
@@ -197,7 +208,7 @@ yesBtn.addEventListener("click", () => {
 	normalKeyboardMode = false;
     document.getElementById("reset").style.display = "inline-block";
     hintKeyboardMode = true;
-    settingWindow.style.display = "none";
+    settingsWindow.style.display = "none";
     gameWindow.style.display = "inline-block";
 	play = true;
 });
@@ -206,7 +217,7 @@ noBtn.addEventListener("click", () => {
 	VirtualKeyboard.init();
 	normalKeyboardMode = false;
 	hintKeyboardMode = false;
-    settingWindow.style.display = "none";
+    settingsWindow.style.display = "none";
 	gameWindow.style.display = "inline-block";
 	play = true;
 });
@@ -215,7 +226,7 @@ normalKeyboardBtn.addEventListener("click", () => {
 	VirtualKeyboard.init();
 	hintKeyboardMode = false;
     normalKeyboardMode = true;
-    settingWindow.style.display = "none";
+    settingsWindow.style.display = "none";
     gameWindow.style.display = "inline-block";
     play = true;
 });
@@ -234,5 +245,6 @@ document.addEventListener(
 document.getElementById("reset").addEventListener("click", () => {
     // Reset the virtual keyboard
     VirtualKeyboard.resetKeyboard();
+    play = true;
 });
 

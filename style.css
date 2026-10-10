@@ -9,7 +9,7 @@ body{
 
 
 
-.letter-box, .inputless {
+.letterBox, .inputless {
     display: inline-block;
     width: 9.5vw;
     background-color: #333333;
@@ -98,19 +98,96 @@ body{
     color: #ffffff;
     padding: 10px;
     border: 1px solid #ffffff;
-    z-index: 1000;
+    z-index: 998;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-.popupWindow:not(#settingWindow) span{
+.popupWindow:not(#settingsWindow) span{
     position: fixed;
     top: 50%;
     transform: translateY(-50%);
     left: 50%;
     transform: translate(-50%, -50%);
+} 
+
+.wiggleDelete {
+    animation: wiggleDelete 500ms ease;
+}
+
+@keyframes wiggleDelete {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
+}
+
+.wiggleDeleteAll {
+    animation: wiggleDeleteAll 500ms ease;
+}
+
+@keyframes wiggleDeleteAll {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-10px); }
+    50% { transform: translateX(10px); }
+    75% { transform: translateX(-10px); }
+    100% { transform: translateX(0); }
+}
+
+.wiggleBAD {
+    animation: wiggleBAD 500ms ease;
+}
+
+@keyframes wiggleBAD {
+    0% { transform: translateX(0) translateY(0); }
+    25% { transform: translateX(5px) translateY(5px); }
+    25% { transform: translateX(5px) translateY(5px); }
+    50% { transform: translateX(-5px) translateY(-15px); }
+    75% { transform: translateX(15px) translateY(5px); }
+    100% { transform: translateX(0) translateY(0); }
+}
+
+
+.flipSuccess {
+    animation: flipSuccess 500ms ease;
+}
+
+@keyframes flipSuccess {
+    0% { transform: rotateX(0); }
+    100% { transform: rotateX(360deg); }
+}
+
+.popdownWindow {
+    width: fit-content;
+    height: fit-content;
+    min-height: 1.2em;
+    max-height: 5%;
+    background-color: #333333;
+    color: #ffffff;
+    padding: 10px;
+    border: 1px solid #ffffff;
+    border-radius: 10px;
+    margin: auto;
+    z-index: 996;
+}
+
+
+.popdownWindow h2 {
+    margin: 0;
+}
+
+.popdownAnimation {
+    animation: popdownAnimation 1500ms ease;
+}
+
+@keyframes popdownAnimation {
+    0% { transform: translateY(-100%) translateX(-50%); opacity: 0; }
+    35% { transform: translateY(0) translateX(-50%); opacity: 1; }
+    68% { transform: translateY(0) translateX(-50%); opacity: 1; }
+    100% { transform: translateY(-100%) translateX(-50%); opacity: 0; }
 }
 
 .popupButton {
@@ -145,18 +222,6 @@ body{
     }
 }
 
-@media (orientation: landscape) {
-    #enter {
-        font-size: 2em;
-        min-height: 2.35em;
-        min-width: 1.3em;
-    }
-    #backspace {
-        font-size: 1.3em;
-        min-height: 2.35em;
-        min-width: 1.765em;
-    }
-}
 
 @media ((orientation: portrait) or (max-width: 1024px)) {
     body{
@@ -176,7 +241,7 @@ body{
         padding-bottom: 55vw;
     }
 
-    .letter-box, .inputless {
+    .letterBox, .inputless {
         width: 15vw;
         height: 15vw;
         line-height: 15vw;
@@ -184,15 +249,19 @@ body{
     .popupWindow {
         width: 80vw;
     }
-    #keyboard, #scrambledKeyboard {
+    #scrambledKeyboard {
         width: 98vw;
         padding: 0;
         justify-content: center;
         margin: auto;
         position: fixed;
         bottom: 0;
-        left: 50%;
-        transform: translateX(-50%);
+        z-index: 998;
+    }
+    #keyboard {
+        position: relative;
+        z-index: 999;
+
     }
     #cf {
         padding-left: 0px;
@@ -205,10 +274,54 @@ body{
     #enter {
         min-width: 1.5em;
     }
+    .popdownWindow {
+        position: relative;
+        min-width: 30em;
+        max-width: 90%;
+        font-size: 0.8em;
+        margin-left: auto;
+        margin-right: auto;
+        align-items: center;
+    
+    }
+
+    .popdownAnimation {
+        animation: popdownAnimation 1500ms ease;
+    }
+
+    @keyframes popdownAnimation {
+        0% { transform: translateY(100%); opacity: 0; }
+        35% { transform: translateY(0); opacity: 1; }
+        68% { transform: translateY(0); opacity: 1; }
+        100% { transform: translateY(100%); opacity: 0; }
+    }
+    
+}
+
+@media ((min-width: 1024px) or (orientation: landscape)) {
+    .popdownWindow {
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        min-width: 30em;
+        max-width: 90%;
+        top: 2vh;
+    }
+
+        #enter {
+        font-size: 2em;
+        min-height: 2.35em;
+        min-width: 1.3em;
+    }
+    #backspace {
+        font-size: 1.3em;
+        min-height: 2.35em;
+        min-width: 1.765em;
+    }
 }
 
 @media (min-width: 2040px) {
-    .letter-box, .inputless {
+    .letterBox, .inputless {
         width: 6vw;
         height: 6vw;
         line-height: 6vw;

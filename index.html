@@ -6,10 +6,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
     <script defer src="script.js"></script>
+    <script defer src="script2.js"></script>
 
 </head>
 <body>
-    <div id="settingWindow" class="popupWindow">
+    <div id="settingsWindow" class="popupWindow">
         <h2>Play with hint keyboard?</h2>
         <span>
             <button id="enableHintKeyboard" class="popupButton">Yes</button>
@@ -27,22 +28,17 @@
             </div>
         </span>
     </div>
-    <div id="invalidWordWindow" class="popupWindow" style="display: none;">
-        <span>
-            <h2 id="invalidReason">Error!</h2>
-            <button id="closeInvalidWord" class="popupButton">Close</button>
-        </span>
+    <div id="invalidWordWindow" class="popdownWindow" style="display: none;">
+        <h2 id="invalidReason">Error!</h2>
     </div>
     <div id="gameWindow" style="display: none;">
         <h1 id="title">DYSLEXLE</h1>
         <h3>Wordle but the letters are out of place</h3>
         <span id="letters">
-            <div id="word"></div>
             <div id="prevGuesses" style="display: none !important;"></div>
-            <div id="inputDiv"></div>
+            <div id="inputDiv" class="letterBoxRow"></div>
         </span>
         <br>
-        <script src="script2.js"></script>
     </div>
 
 </body>
