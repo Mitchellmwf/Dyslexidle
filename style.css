@@ -276,8 +276,7 @@ body{
     }
     .popdownWindow {
         position: relative;
-        min-width: 30em;
-        max-width: 90%;
+        width: 85vw;
         font-size: 0.8em;
         margin-left: auto;
         margin-right: auto;
@@ -298,7 +297,7 @@ body{
     
 }
 
-@media ((min-width: 1024px) or (orientation: landscape)) {
+@media ((min-width: 1024px) and (orientation: landscape)) {
     .popdownWindow {
         position: fixed;
         left: 50%;
@@ -308,16 +307,24 @@ body{
         top: 2vh;
     }
 
-        #enter {
+    #enter {
         font-size: 2em;
-        min-height: 2.35em;
+        min-height: 2.6rem;
         min-width: 1.3em;
+        max-width: 10em;
+        max-height: 2.6em;
     }
-    #backspace {
-        font-size: 1.3em;
-        min-height: 2.35em;
-        min-width: 1.765em;
+
+    .key{
+        width: 4vw;
+        height: 4vw;
+        line-height: 4vw;
     }
+    .fn{
+        
+        width: 10vw;
+    }
+
 }
 
 @media (min-width: 2040px) {
