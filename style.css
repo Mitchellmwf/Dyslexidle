@@ -8,6 +8,8 @@ body{
 }
 
 
+
+
 .letter-box, .inputless {
     display: inline-block;
     width: 9.5vw;
@@ -42,6 +44,7 @@ body{
     flex-wrap: wrap;
     gap: 0.5vw;
     list-style-type: none;
+    padding-left: 0px;
 }
 
 .key{
@@ -136,18 +139,30 @@ body{
 }
 
 @media (orientation: landscape) {
-    
+    #enter {
+        font-size: 2em;
+        min-height: 2.35em;
+        min-width: 1.3em;
+    }
+    #backspace {
+        font-size: 1.3em;
+        min-height: 2.35em;
+        min-width: 1.765em;
+    }
 }
 
-@media (orientation: portrait) {
+@media ((orientation: portrait) or (max-width: 1024px)) {
     body{
-        width: 90vw;
+        width: 98vw;
     }
-    .key:not(.fn){
-        width: 7.5vw;
-        height: 7.5vw;
+    .key{
+        width: fit-content;
+        height: fit-content;
+        min-height: 2em;
+        min-width: 1.05em;
+        padding: 0.1em;
         line-height: 7.5vw;
-        font-size: 1.1em;
+        font-size: 2em;
     }
     .letter-box, .inputless {
         width: 15vw;
@@ -156,6 +171,27 @@ body{
     }
     #popupWindow {
         width: 80vw;
+    }
+    #keyboard, #scrambledKeyboard {
+        width: 95vw;
+        padding: 0;
+        justify-content: center;
+        margin: auto;
+        position: fixed;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+    #cf {
+        padding-left: 0px;
+    }
+    #backspace {
+        font-size: 1.7em;
+        min-height: 2.35em;
+        min-width: 1.765em;
+    }
+    #enter {
+        min-width: 1.5em;
     }
 }
 

@@ -6,8 +6,7 @@ const VirtualKeyboard = {
 	rows: [
 		["q", "w", "e", "r", "t", "y", "u", "i", "o", "p"],
 		["a", "s", "d", "f", "g", "h", "j", "k", "l"],
-		["z", "x", "c", "v", "b", "n", "m"],
-		["enter", "backspace"],
+		["enter","z", "x", "c", "v", "b", "n", "m","backspace"],
 	],
 
 	init() {
@@ -35,7 +34,11 @@ const VirtualKeyboard = {
 				if (key === "enter" || key === "backspace") {
 					keyButton.dataset.key = key;
 					keyButton.id = key;
-					label.textContent = key;
+					label.textContent = key === "enter" ? "↵" : "⌫";
+					if (key === "backspace")
+						keyButton.id = "backspace";
+					else if (key === "enter")
+						keyButton.id = "enter";
 					keyButton.classList.add("fn");
 				} else {
 					keyButton.id = key;
@@ -176,17 +179,23 @@ yesBtn.addEventListener("click", () => {
 	play = true;
 
 	// Trigger the mobile keyboard by focusing on the hidden input https://stackoverflow.com/questions/4609765/manually-triggering-the-iphone-ipad-ipod-keyboard-from-javascript
-    inputPrompt.style.visibility = 'visible'; // unhide the input
-    inputPrompt.focus(); // focus on it so keyboard pops
-    inputPrompt.style.visibility = 'hidden'; // hide it again
+    // inputPrompt.style.display = 'inline-block'; // unhide the input
+    // inputPrompt.focus(); // focus on it so keyboard pops
 });
 
 noBtn.addEventListener("click", () => {
     popupWindow.style.display = "none";
 	play = true;
-    gameWindow.style.display = "inline-block";
-    inputPrompt.style.visibility = 'visible'; // unhide the input
-    inputPrompt.focus(); // focus on it so keyboard pops
-    inputPrompt.style.visibility = 'hidden'; // hide it again
+    // gameWindow.style.display = "inline-block";
+    // inputPrompt.style.display = 'inline-block'; // unhide the input
+    // inputPrompt.focus(); // focus on it so keyboard pops
 });
 
+// Prevent double-click zoom on mobile devices https://stackoverflow.com/questions/73114268/disable-double-tap-to-zoom
+document.addEventListener(
+  "dblclick",
+  function (event) {
+    event.preventDefault();
+  },
+  { passive: false }
+);
