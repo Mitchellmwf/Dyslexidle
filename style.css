@@ -154,6 +154,9 @@ body{
         height: 15vw;
         line-height: 15vw;
     }
+    #popupWindow {
+        width: 80vw;
+    }
 }
 
 @media (min-width: 2040px) {

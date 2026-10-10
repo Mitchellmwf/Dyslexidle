@@ -167,18 +167,26 @@ const yesBtn = document.getElementById("enableHintKeyboard");
 const noBtn = document.getElementById("disableHintKeyboard");
 const gameWindow = document.getElementById("gameWindow");
 const popupWindow = document.getElementById("popupWindow");
+const inputPrompt = document.getElementById("inputPrompt");
 
 yesBtn.addEventListener("click", () => {
     VirtualKeyboard.init();
     popupWindow.style.display = "none";
     gameWindow.style.display = "inline-block";
 	play = true;
+
+	// Trigger the mobile keyboard by focusing on the hidden input https://stackoverflow.com/questions/4609765/manually-triggering-the-iphone-ipad-ipod-keyboard-from-javascript
+    inputPrompt.style.visibility = 'visible'; // unhide the input
+    inputPrompt.focus(); // focus on it so keyboard pops
+    inputPrompt.style.visibility = 'hidden'; // hide it again
 });
 
 noBtn.addEventListener("click", () => {
     popupWindow.style.display = "none";
 	play = true;
     gameWindow.style.display = "inline-block";
-	play = true;
+    inputPrompt.style.visibility = 'visible'; // unhide the input
+    inputPrompt.focus(); // focus on it so keyboard pops
+    inputPrompt.style.visibility = 'hidden'; // hide it again
 });
 
