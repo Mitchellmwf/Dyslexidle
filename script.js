@@ -13,9 +13,6 @@ function fetchRandomWord() {
             //select random word from the list, log it to the console
             word = words[Math.floor(Math.random() * words.length)].trim();
             console.log("Selected word:", word);
-            //create letter boxes for the selected word
-            // wordBoxes = word.split('').map(letter => `<span class="letter-box">${letter}</span>`).join('');
-            // wordElement.innerHTML = wordBoxes;
         })
         .catch(error => console.error('Error fetching words:', error));
 }
@@ -165,14 +162,22 @@ function moveToNextWord() {
     //make each letter that matches the target word green
     const prevGuessBoxes = prevGuessesDiv.lastElementChild.querySelectorAll(".letter-box");
 
+    let wordCopy = word.split('');
+
 
     prevGuessBoxes.forEach((box, index) => {
         if (box.textContent.toUpperCase() === word[index]) {
             box.style.backgroundColor = "#076a07";
+            wordCopy[index] = null; // Mark this letter as used
+            console.log(`Letter ${box.textContent.toUpperCase()} is correct and in the right position.`);
         }
-        //make each letter that exists in the target word but in the wrong position yellow
-        else if (word.includes(box.textContent.toUpperCase())) {
+    });
+    //make each letter that exists in the target word but in the wrong position yellow
+    prevGuessBoxes.forEach((box, index) => {
+        if (wordCopy.includes(box.textContent.toUpperCase()) && box.textContent.toUpperCase() !== word[index]) {
             box.style.backgroundColor = "#6a6a07";
+            wordCopy[wordCopy.indexOf(box.textContent.toUpperCase())] = null; // Mark this letter as used
+            console.log(`Letter ${box.textContent.toUpperCase()} is correct but in the wrong position.`);
         }
     });
 
