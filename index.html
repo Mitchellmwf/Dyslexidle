@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>DYSLEXILE</title>
+    <title>DYSLEXLE</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="style.css">
@@ -19,18 +19,22 @@
         <p>Keyboard is interactable and needed for those on touch screens.</p>
     </div>
     <div id="winWindow" class="popupWindow" style="display: none;">
-        <h2>You Win!</h2>
         <span>
-            <button id="playAgainWin" class="popupButton">Play Again</button> 
-            <button id="reset" class="popupButton" style="display: none;">Reset keyboard</button>
+            <h2>You Win!</h2>
+            <div>
+                <button id="playAgainWin" class="popupButton">Play Again</button> 
+                <button id="reset" class="popupButton" style="display: none;">Reset keyboard</button>
+            </div>
         </span>
     </div>
     <div id="invalidWordWindow" class="popupWindow" style="display: none;">
-        <h2 id="invalidReason">Error!</h2>
-        <button id="closeInvalidWord" class="popupButton">Close</button>
+        <span>
+            <h2 id="invalidReason">Error!</h2>
+            <button id="closeInvalidWord" class="popupButton">Close</button>
+        </span>
     </div>
     <div id="gameWindow" style="display: none;">
-        <h1 id="title">DYSLEXILE</h1>
+        <h1 id="title">DYSLEXLE</h1>
         <h3>Wordle but the letters are out of place</h3>
         <span id="letters">
             <div id="word"></div>

@@ -104,10 +104,13 @@ body{
     justify-content: center;
     align-items: center;
 }
-#invalidWordWindow *, 
-#winWindow * {
-    padding: auto;
-    margin: auto;
+
+.popupWindow:not(#settingWindow) span{
+    position: fixed;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .popupButton {
@@ -182,7 +185,7 @@ body{
         width: 80vw;
     }
     #keyboard, #scrambledKeyboard {
-        width: 95vw;
+        width: 98vw;
         padding: 0;
         justify-content: center;
         margin: auto;
