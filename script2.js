@@ -1,3 +1,6 @@
+let normalKeyboardMode = false;
+let hintKeyboardMode = true;
+
 //https://www.geeksforgeeks.org/html/build-a-virtual-keyboard-using-html-css-javascript/ modified by copilot
 const VirtualKeyboard = {
 	discoveredMap: {},
@@ -9,6 +12,7 @@ const VirtualKeyboard = {
 		["enter","z", "x", "c", "v", "b", "n", "m","backspace"],
 	],
 
+	// Initialize the virtual keyboard
 	init() {
 		const container = document.createElement("div");
 		container.id = "scrambledKeyboard";
@@ -17,6 +21,7 @@ const VirtualKeyboard = {
 		keyboard.id = "keyboard";
 		container.appendChild(keyboard);
 
+		// Create the rows of the keyboard
 		this.rows.forEach((row, rowIndex) => {
 			const rowElement = document.createElement("ul");
 			rowElement.classList.add("cf");
@@ -136,6 +141,11 @@ const VirtualKeyboard = {
 	},
 
 	revealMapping(physicalKey, mappedKey) {
+		//Only reveal if hint keyboard mode is enabled
+		if (!hintKeyboardMode) {
+			return;
+		}
+		// Validate the physical key
 		if (!/^[a-z]$/.test(physicalKey)) {
 			return;
 		}
@@ -164,31 +174,50 @@ const VirtualKeyboard = {
 			}, 260);
 		}
 	},
+
+	resetKeyboard() {
+        document.getElementById("scrambledKeyboard").remove();
+		keyboardMap = {};
+		
+		this.init();
+    },
 };
 
 const yesBtn = document.getElementById("enableHintKeyboard");
 const noBtn = document.getElementById("disableHintKeyboard");
+const normalKeyboardBtn = document.getElementById("enableNormalKeyboard");
+
 const gameWindow = document.getElementById("gameWindow");
-const popupWindow = document.getElementById("popupWindow");
+const settingWindow = document.getElementById("settingWindow");
 const inputPrompt = document.getElementById("inputPrompt");
 
+// Event listeners for enabling or disabling the hint keyboard
 yesBtn.addEventListener("click", () => {
     VirtualKeyboard.init();
-    popupWindow.style.display = "none";
+	normalKeyboardMode = false;
+    document.getElementById("reset").style.display = "inline-block";
+    hintKeyboardMode = true;
+    settingWindow.style.display = "none";
     gameWindow.style.display = "inline-block";
 	play = true;
-
-	// Trigger the mobile keyboard by focusing on the hidden input https://stackoverflow.com/questions/4609765/manually-triggering-the-iphone-ipad-ipod-keyboard-from-javascript
-    // inputPrompt.style.display = 'inline-block'; // unhide the input
-    // inputPrompt.focus(); // focus on it so keyboard pops
 });
 
 noBtn.addEventListener("click", () => {
-    popupWindow.style.display = "none";
+	VirtualKeyboard.init();
+	normalKeyboardMode = false;
+	hintKeyboardMode = false;
+    settingWindow.style.display = "none";
+	gameWindow.style.display = "inline-block";
 	play = true;
-    // gameWindow.style.display = "inline-block";
-    // inputPrompt.style.display = 'inline-block'; // unhide the input
-    // inputPrompt.focus(); // focus on it so keyboard pops
+});
+
+normalKeyboardBtn.addEventListener("click", () => {
+	VirtualKeyboard.init();
+	hintKeyboardMode = false;
+    normalKeyboardMode = true;
+    settingWindow.style.display = "none";
+    gameWindow.style.display = "inline-block";
+    play = true;
 });
 
 // Prevent double-click zoom on mobile devices https://stackoverflow.com/questions/73114268/disable-double-tap-to-zoom
@@ -199,3 +228,11 @@ document.addEventListener(
   },
   { passive: false }
 );
+
+// Event listener for the "Reset keyboard" button in the win window
+//Resets keyboard hints
+document.getElementById("reset").addEventListener("click", () => {
+    // Reset the virtual keyboard
+    VirtualKeyboard.resetKeyboard();
+});
+

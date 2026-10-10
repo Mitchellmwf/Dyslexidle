@@ -1,8 +1,12 @@
+
+
+
 // The below section grabs a random 4 letter word from four-letter words and displays it with letter boxes. https://github.com/getify/dwordly-game/blob/main/four-letter-words.json
 const wordElement = document.getElementById("word");
 
 let word = "";
 // Fetch a random word from words.txt and display it with letter boxes
+function fetchRandomWord() {
     fetch('four-letter-words.json')
         .then(response => response.json())
         .then(words => {
@@ -14,6 +18,9 @@ let word = "";
             // wordElement.innerHTML = wordBoxes;
         })
         .catch(error => console.error('Error fetching words:', error));
+}
+
+fetchRandomWord();
 
 
 // The below section scrambles the keyboard inputs 
@@ -21,6 +28,9 @@ const alphabet = "abcdefghijklmnopqrstuvwxyz".split("");
 let keyboardMap = {};
 
 function keyboardScrambleMap(key = "") {
+    if (normalKeyboardMode) {
+        return key;
+    }
     if (!Object.keys(keyboardMap).length) {
         const shuffled = [...alphabet];
 
@@ -44,8 +54,6 @@ function keyboardScrambleMap(key = "") {
     return keyboardMap[key] ?? key;
 }
 
-keyboardScrambleMap();
-
 
 
 // The below section handles the keyboard input 
@@ -53,6 +61,8 @@ const inputDiv = document.getElementById("inputDiv");
 let inputWord = "";
 
 const inputBoxes = '<span class="letter-box"></span>'.repeat(4);
+const invalidReason = document.getElementById("invalidReason");
+
 inputDiv.innerHTML = inputBoxes;
 let play = false;
 
@@ -65,8 +75,23 @@ fetch("four-letter-words.json")
 
 
 document.addEventListener("keydown", (event) => {
+    if (event.key === "Escape" || event.key === "Enter") {
+        if (invalidWordWindow.style.display === "block") {
+            invalidWordWindow.style.display = "none";
+            play = true;
+            return;
+        }
+        else if (winWindow.style.display === "block") {
+            winWindow.style.display = "none";
+            resetGame();
+            play = true;
+            return;
+        }
+    }
+
     const mappedKey = keyboardScrambleMap(event.key);
     const key = mappedKey.toLowerCase();
+
 
     //All keyboard inputs are handled within this loop
     while (play === true) { 
@@ -88,9 +113,17 @@ document.addEventListener("keydown", (event) => {
                 if (fourLetterWords.includes(inputWord.toUpperCase())) {
                     moveToNextWord();
                 } else {
-                    alert("Not a valid four-letter word!");
+                    invalidReason.textContent = "Not in Word List!";
+                    invalidWordWindow.style.display = "block";
+                    play = false;
                     return;
                 }
+            }
+            else {
+                invalidReason.textContent = "Please enter a four-letter word!";
+                invalidWordWindow.style.display = "block";
+                play = false;
+                return;
             }
         }
         // Fill the remaining boxes with empty letter boxes
@@ -109,6 +142,8 @@ document.addEventListener("keydown", (event) => {
 
 // The below section moves the current input word to the previous guesses and adds colours based on how closely it matches the target word
 const prevGuessesDiv = document.getElementById("prevGuesses");
+const winWindow = document.getElementById("winWindow");
+const invalidWordWindow = document.getElementById("invalidWordWindow");
 //function to move to the next word
 function moveToNextWord() {
     //capitalize the input word
@@ -129,6 +164,8 @@ function moveToNextWord() {
 
     //make each letter that matches the target word green
     const prevGuessBoxes = prevGuessesDiv.lastElementChild.querySelectorAll(".letter-box");
+
+
     prevGuessBoxes.forEach((box, index) => {
         if (box.textContent.toUpperCase() === word[index]) {
             box.style.backgroundColor = "#076a07";
@@ -145,7 +182,8 @@ function moveToNextWord() {
         play = false;
         // Delete the inputDiv content
         inputDiv.innerHTML = "";
-        
+
+        winWindow.style.display = "block";
     }
     else {
         // Reset the input word and inputDiv for the next attempt
@@ -156,6 +194,28 @@ function moveToNextWord() {
     }
 }
 
+// Event listener for the "Play Again" button in the win window
+document.getElementById("playAgainWin").addEventListener("click", () => {
+    // Hide the win window
+    document.getElementById("winWindow").style.display = "none";
+    resetGame();
+});
+
+function resetGame() {
+    // Reset the game state
+    inputWord = "";
+    fetchRandomWord();
+    play = true;
+    inputDiv.innerHTML = '<span class="letter-box"></span>'.repeat(4);
+    prevGuessesDiv.innerHTML = "";
+    prevGuessesDiv.style.display = "none";
+}
+
+// Event listener for the "Close" button in the invalid word window
+document.getElementById("closeInvalidWord").addEventListener("click", () => {
+    invalidWordWindow.style.display = "none";
+    play = true;
+});
 
 
 

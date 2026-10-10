@@ -9,15 +9,25 @@
 
 </head>
 <body>
-    <div id="popupWindow">
+    <div id="settingWindow" class="popupWindow">
         <h2>Play with hint keyboard?</h2>
         <span>
             <button id="enableHintKeyboard" class="popupButton">Yes</button>
             <button id="disableHintKeyboard" class="popupButton">No</button>
+            <button id="enableNormalKeyboard" class="popupButton">Normal Keyboard</button>
         </span>
         <p>Keyboard is interactable and needed for those on touch screens.</p>
     </div>
-    <div id="winLossWindow" style="display: none;">
+    <div id="winWindow" class="popupWindow" style="display: none;">
+        <h2>You Win!</h2>
+        <span>
+            <button id="playAgainWin" class="popupButton">Play Again</button> 
+            <button id="reset" class="popupButton" style="display: none;">Reset keyboard</button>
+        </span>
+    </div>
+    <div id="invalidWordWindow" class="popupWindow" style="display: none;">
+        <h2 id="invalidReason">Error!</h2>
+        <button id="closeInvalidWord" class="popupButton">Close</button>
     </div>
     <div id="gameWindow" style="display: none;">
         <h1 id="title">DYSLEXILE</h1>
@@ -27,7 +37,6 @@
             <div id="prevGuesses" style="display: none !important;"></div>
             <div id="inputDiv"></div>
         </span>
-        <input type="text" id="inputPrompt" autocomplete="off" spellcheck="false" style="display: none;">
         <br>
         <script src="script2.js"></script>
     </div>

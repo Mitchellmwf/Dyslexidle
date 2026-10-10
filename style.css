@@ -9,7 +9,6 @@ body{
 
 
 
-
 .letter-box, .inputless {
     display: inline-block;
     width: 9.5vw;
@@ -88,7 +87,7 @@ body{
 }
 
 
-#popupWindow {
+.popupWindow {
     position: fixed;
     width: 40vw;
     bottom: 10vh;
@@ -104,6 +103,11 @@ body{
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+#invalidWordWindow *, 
+#winWindow * {
+    padding: auto;
+    margin: auto;
 }
 
 .popupButton {
@@ -164,12 +168,17 @@ body{
         line-height: 7.5vw;
         font-size: 2em;
     }
+
+    #gameWindow { 
+        padding-bottom: 55vw;
+    }
+
     .letter-box, .inputless {
         width: 15vw;
         height: 15vw;
         line-height: 15vw;
     }
-    #popupWindow {
+    .popupWindow {
         width: 80vw;
     }
     #keyboard, #scrambledKeyboard {
