@@ -72,22 +72,36 @@ fetch("four-letter-words.json")
 
 
 document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape" || event.key === "Enter") {
-        if (invalidWordWindow.style.display === "block") {
-            invalidWordWindow.style.display = "none";
-            play = true;
-            return;
-        }
-        else if (winWindow.style.display === "block") {
-            winWindow.style.display = "none";
-            resetGame();
-            play = true;
-            return;
-        }
+    // Let user use the Enter key to start a new game when the win window is displayed
+    if ( event.key === "Enter" && winWindow.style.display === "block" && enterClosesWinWindow === true) {
+        enterClosesWinWindow = false;
+        winWindow.style.display = "none";
+        resetGame();
+        play = true;
+        return;
+    } 
+    // Let user open the win window with the Enter or Backspace key after closing it
+    else if ((event.key === "Enter" || event.key === "Backspace") && !play && winWindow.classList.contains("minimizedWinWindow")) {
+        setTimeout(() => {
+            enterClosesWinWindow = true;
+        }, 100);
+        winWindow.style.display = "block";
+        winWindow.classList.remove("minimizedWinWindow");
+    }
+    // Let user close the win window with the Escape key 
+    if (event.key === "Escape" && winWindow.style.display === "block" && enterClosesWinWindow === true ) {
+        enterClosesWinWindow = false;
+        winWindow.style.display = "none";
+        winWindow.classList.add("minimizedWinWindow");
+
+        invalidReason.textContent = "Reopen with Enter or Backspace";
+        console.log(invalidReason.textContent);
+        animateInputBoxes(-1, "popdown");
     }
 
     const mappedKey = keyboardScrambleMap(event.key);
     const key = mappedKey.toLowerCase();
+
 
 
     //All keyboard inputs are handled within this loop
@@ -121,7 +135,7 @@ document.addEventListener("keydown", (event) => {
                     //Invalid input: word not in the list
                     invalidReason.textContent = "Not in Word List!";
                     animateInputBoxes(-1, "popdown");
-                    invalidWordWindow.style.display = "block";
+                    popdownWindow.style.display = "block";
                     animateInputBoxes(0, "bad");
                     //play = false;
                     return;
@@ -131,12 +145,11 @@ document.addEventListener("keydown", (event) => {
                 //Invalid input: word is not four letters
                 invalidReason.textContent = "Please enter a four-letter word!";
                 animateInputBoxes(-1, "popdown");
-                invalidWordWindow.style.display = "block";
+                popdownWindow.style.display = "block";
                 animateInputBoxes(0, "bad");
                 //play = false;
                 return;
             }
-        animateInputBoxes(1, "flip");
         }
         // Fill the remaining boxes with empty letter boxes
         if (inputWord.length < 4) {
@@ -151,11 +164,13 @@ document.addEventListener("keydown", (event) => {
         break;
     }
 });
-
+let popdownWindowClone = null;
 function animateInputBoxes(index, direction) {
+    if (!popdownWindowClone) {
+        popdownWindowClone = document.querySelector("#popdownWindow");
+    }
     let letterBoxes = document.querySelectorAll(".letterBox");
     let letterBoxRows = Array.from(document.querySelectorAll(".letterBoxRow")).reverse();
-    const popdownWindow = document.querySelector("#invalidWordWindow");
 
     if (direction === "bad") {
         letterBoxRows[index].classList.add("wiggleBAD");
@@ -166,12 +181,69 @@ function animateInputBoxes(index, direction) {
     } else if (direction === "deleteAll") {
         letterBoxRows[index].classList.add("wiggleDeleteAll");
     } else if (direction === "popdown") {
-        popdownWindow.style.display = "block";
-        popdownWindow.classList.add("popdownAnimation");
+        popdownWindowClone.style.display = "block";
+        popdownWindowClone.classList.add("popdownAnimation");
         setTimeout(() => {
-            popdownWindow.classList.remove("popdownAnimation");
-            popdownWindow.style.display = "none";
+            popdownWindowClone.classList.remove("popdownAnimation");
+            popdownWindowClone.style.display = "none";
         }, 1550);
+    } else if (direction === "All") {
+        letterBoxes.forEach(box => box.classList.add("flipSuccess"));
+    } else if (direction === "scramble") {
+        const row = letterBoxRows[index];
+        const children = Array.from(row.children);
+
+        // Record original positions for each element
+        const positions = new Map();
+
+        children.forEach(child => {
+            positions.set(child, child.getBoundingClientRect());
+        });
+
+        // Fisher-Yates shuffle
+        for (let i = children.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [children[i], children[j]] = [children[j], children[i]];
+        }
+
+        // Reorder the actual boxes
+        children.forEach(child => row.appendChild(child));
+
+        // Animate each box from its old position to its new one
+        children.forEach(child => {
+            const first = positions.get(child);
+            const last = child.getBoundingClientRect();
+
+            child.animate(
+                [
+                    {
+                        transform: `translate(
+                            ${first.left - last.left}px,
+                            ${first.top - last.top}px
+                        )`
+                    },
+                    {
+                        transform: "translate(0px, 0px)"
+                    }
+                ],
+                {
+                    duration: 500,
+                    easing: "ease-in-out"
+                }
+            );
+        });
+    } else if (direction === "twist") {
+        for (let i = letterBoxRows[index].children.length - 1; i >= 0; i--) { 
+            console.log("Twisting letter box at index:", i);
+            letterBoxRows[index].children[i].classList.add("twistAnimation");
+            
+            setTimeout(() => {
+                letterBoxRows[index].children[i].classList.remove("twistAnimation");
+            }, 1000);
+        }
+    }
+
+    if (index < 0) {
         return;
     }
 
@@ -187,7 +259,9 @@ function animateInputBoxes(index, direction) {
 // The below section moves the current input word to the previous guesses and adds colours based on how closely it matches the target word
 const prevGuessesDiv = document.getElementById("prevGuesses");
 const winWindow = document.getElementById("winWindow");
-const invalidWordWindow = document.getElementById("invalidWordWindow");
+let popdownWindow = document.querySelector("#popdownWindow");
+let enterClosesWinWindow = true;
+
 //function to move to the next word
 function moveToNextWord() {
     //capitalize the input word
@@ -227,17 +301,24 @@ function moveToNextWord() {
             console.log(`Letter ${box.textContent.toUpperCase()} is correct but in the wrong position.`);
         }
     });
-
+    animateInputBoxes(1, "flip");
     // Check if the input word matches the target word
     if (inputWord === word) {
         // If the input word matches the target word, stop the game
         play = false;
         // Delete the inputDiv content
         inputDiv.innerHTML = "";
+        //animateInputBoxes(-1, "All");
 
-        winWindow.style.display = "block";
+        setTimeout(() => {
+            enterClosesWinWindow = true;
+            setTimeout(() => {
+                winWindow.style.display = "block";
+            }, 760); // Hide the win window after 2 seconds
+        }, 100); // Hide the win window after 2 seconds
     }
     else {
+        animateInputBoxes(1, "scramble");
         // Reset the input word and inputDiv for the next attempt
         inputWord = "";
         inputDiv.innerHTML = '<span class="letterBox"></span>'.repeat(4);
@@ -255,7 +336,17 @@ document.getElementById("playAgainWin").addEventListener("click", () => {
     resetGame();
 });
 
+// Event listener for the "close" button in the win window
+document.getElementById("closeWinWindow").addEventListener("click", () => {
+    document.getElementById("winWindow").style.display = "none";
+    winWindow.classList.add("minimizedWinWindow");
+    enterClosesWinWindow = false;
+    invalidReason.textContent = "Reopen with Enter or Backspace";
+    animateInputBoxes(-1, "popdown");
+});
+
 function resetGame() {
+    winWindow.classList.remove("minimizedWinWindow");
     // Reset the game state
     inputWord = "";
     fetchRandomWord();

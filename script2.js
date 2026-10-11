@@ -21,8 +21,8 @@ const VirtualKeyboard = {
 		// On mobile or portrait devices, move popdown into #keyboard div
 		if (window.innerHeight > window.innerWidth && window.innerWidth <= 1024) {
 			//clone the invalidWordWindow and append it to the keyboard div and delete the original
-			container.appendChild(invalidWordWindow.cloneNode(true));
-			invalidWordWindow.remove();
+			container.appendChild(popdownWindow.cloneNode(true));
+			popdownWindow.remove();
 		}
 
 
