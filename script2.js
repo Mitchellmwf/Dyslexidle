@@ -217,6 +217,7 @@ noBtn.addEventListener("click", () => {
 	VirtualKeyboard.init();
 	normalKeyboardMode = false;
 	hintKeyboardMode = false;
+	document.getElementById("reset").style.display = "inline-block";
     settingsWindow.style.display = "none";
 	gameWindow.style.display = "inline-block";
 	play = true;
